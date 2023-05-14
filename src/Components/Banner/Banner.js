@@ -1,18 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./Banner.css"
+import axios from '../../axios'
+import {API_KEY,imageURL} from '../../Constants/constants'
+
 
 function Banner() {
+        const [movie, setMovie] = useState("");
+
+
+        useEffect(() => {
+                axios.get(`trending/all/week?api_key=${API_KEY}&language=en-US`).then((response) => {
+                        const results = response.data.results;
+                        const randomIndex = Math.floor(Math.random() * results.length);
+                        console.log(results[randomIndex])
+                        setMovie(results[randomIndex])
+                })
+
+        }, [])
+
+
   return (
-    <div className='banner'>
+    <div style={{ backgroundImage :`url(${ movie ? imageURL+movie.backdrop_path : ""})` }} className='banner'>
         <div className='content'>
-                <h1 className='title'> Movie name</h1>
+                <h1 className='title'>{movie.title}</h1>
                 <div className='banner_buttons'>
                         <button className='button'>Play</button>
                         <button className='button'>My List</button>
                 </div>
-                <h1 className='description'>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. 
-                The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', 
-                making it look like readable English. </h1>
+                <h1 className='description'>{movie.overview} </h1>
         </div>
         <div className='fade_bottom'></div>    
     </div>
